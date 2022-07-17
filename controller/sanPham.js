@@ -16,10 +16,25 @@ export const _getSanPham = async (req, res) => {
 
 export const _getDataToSeasons = async (req, res) => {
     try {
+        var now = new Date();
+        const _month = now.getMonth() + 1;
+        var seasonType = 0;
+        if (_month > 2 && _month < 6) {
+            seasonType = 1;
+        } else if (_month > 5 && _month < 9) {
+            seasonType = 2;
+        } else if (_month > 8 && _month < 12) {
+            seasonType = 3;
+        } else if (_month > 11 && _month < 13) {
+            seasonType = 4;
+        } else if (_month > 0 && _month < 3) {
+            seasonType = 4;
+        }
         var perPage = Math.max(0, req.query.perPage);
         var pagenumber = Math.max(0, req.query.pagenumber);
-        var seasonType = req.query.seasonType
-        const value = await ModelSanPham.find({ seasons: 1 }).limit(perPage).skip(perPage * pagenumber).sort({ "createdAt": -1 });
+        const value = await ModelSanPham.find({
+            seasons: req.query?.seasonType ?? seasonType
+        }).limit(perPage).skip(perPage * pagenumber).sort({ "createdAt": -1 });
         res.status(200).send({
             dataSP: value,
         });
